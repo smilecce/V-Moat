@@ -30,12 +30,9 @@ Please ensure datasets are downloaded and organized according to the paths speci
 
 ## 🛠️ Model Enhancement
 
-To improve model robustness, we employ fine-tuning under varying noise scales ($\sigma$). You can initiate the fine-tuning process using specific configuration files for each $\sigma$ value:
-
-Bash
+To improve model robustness, we employ fine-tuning under varying noise scales. You can initiate the fine-tuning process using specific configuration files for each $\sigma$ value:
 
 ```
-# Example: Fine-tuning ECAPA-TDNN with sigma = 1.0
 CUDA_VISIBLE_DEVICES=0,1 python train_speaker_embeddings.py \
     hparams/train_ecapa_tdnn_sigma_10.yaml \
     --data_parallel_backend
@@ -61,7 +58,7 @@ The robustness of V-Moat relies on several key components:
 
 #### **Instantiation**
 
-To instantiate a smoothed classifier $g$, use the constructor:
+To instantiate a smoothed classifier $\mathcal{G}$, use the constructor:
 
 ```
 def __init__(self, base_classifier: torch.nn.Module, num_classes: int, sigma: float):
@@ -69,7 +66,7 @@ def __init__(self, base_classifier: torch.nn.Module, num_classes: int, sigma: fl
 
 - `base_classifier`: A PyTorch module that implements the base model $f$.
 - `num_classes`: The number of classes in the output space.
-- `sigma`: The noise hyperparameter $\sigma$, controlling the smoothing variance.
+- `sigma`: The noise hyperparameter, controlling the smoothing variance.
 
 #### **Prediction**
 
@@ -92,16 +89,16 @@ def certify(self, x: torch.Tensor, n0: int, n: int, alpha: float, batch_size: in
 ```
 
 - `n0`: Number of Monte Carlo samples for initial selection (top-class hypothesis).
-- `n`: Number of Monte Carlo samples for estimation (confidence bound calculation).
+- `n`: Number of Monte Carlo samples for estimation.
 - `alpha`: The confidence level.
-- **Returns**: A pair `(prediction, radius)`. If the algorithm abstains, it returns `(-1, 0.0)`. With probability at least $1 - \alpha$, the returned prediction equals $g(x)$, and the model is robust within the certified $L_{PSY}$ radius.
+- **Returns**: A pair `(prediction, radius)`. If the algorithm abstains, it returns `(-1, 0.0)`. With probability at least $1 - \alpha$, the returned prediction equals $\mathcal{G}$, and the model is robust within the certified  radius.
 
 ### Certified Accuracy
 
-To evaluate the certified robustness of V-Moat, use the following script to calculate and plot the **Certified Accuracy **:
+To evaluate the certified robustness of VMoat, use the following script to calculate and plot the Certified Accuracy :
 
 ```
-python certify_plot_accuracy_radius_git.py \
+python certify_plot_accuracy_radius.py \
     --model_name FT33Sigmafix_30 \
     --sigma 30 \
     --batch 120 \
@@ -116,7 +113,7 @@ python certify_plot_accuracy_radius_git.py \
 To calculate the empirical audibility bounds and optimize detection thresholds:
 
 ```
-python empirical_bound_save_best_audi_git.py \
+python empirical_bound_save_best_audi.py \
     --sigma 10 \
     --batch 120 \
     --model_src ./model/trained_models/CKPT_PATH
@@ -130,7 +127,7 @@ We conduct user studies to validate the alignment between our proposed Audibilit
 
 Use `Questionnaire.py` to generate perceptual test samples. Optimize the audibility metric parameters based on collected human responses using contrastive learning
 
-To evaluate whether there is an overlap between the noise audibility and human perception, we use `survey_test_under5s_v_en.py`  to collect data. The detailed statistical analysis and visualization of user performance are provided in:`answers_under5s_analysis_all-audi2-2025vmoat.ipynb`
+To evaluate whether there is an overlap between the noise audibility and human perception, we use `survey_test.py`  to collect data. The detailed statistical analysis and visualization of user performance are provided in:`answers_analysis.ipynb`
 
 ------
 
