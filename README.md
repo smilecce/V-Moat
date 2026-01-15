@@ -82,7 +82,7 @@ def predict(self, x: torch.Tensor, n: int, alpha: float, batch_size: int) -> int
 
 #### **Certification**
 
-To compute the certified radius within which $g$'s prediction is guaranteed to be constant around an input $x$:
+To compute the certified radius within which $g$ 's prediction is guaranteed to be constant around an input $x$ :
 
 ```
 def certify(self, x: torch.Tensor, n0: int, n: int, alpha: float, batch_size: int) -> (int, float):
