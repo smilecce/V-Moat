@@ -9,9 +9,6 @@ Clone the repository and set up the environment using Conda:
 Bash
 
 ```
-git clone https://github.com/smilecce/V-Moat.git
-cd V-Moat
-
 conda create -n vmoat python=3.9
 conda activate vmoat
 pip install -r requirements.txt
